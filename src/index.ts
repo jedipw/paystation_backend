@@ -1,11 +1,42 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import multer, { Multer } from 'multer';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
+
+// connect to MongoDB using mongoose
+// mongoose.connect('mongodb+srv://admin:64130500268@cluster0.ym9abab.mongodb.net/database')
+
+const uri = "mongodb+srv://admin:64130500268@cluster0.ym9abab.mongodb.net/Database"
+async function connect() { 
+    try {
+        await mongoose.connect(uri);
+        console.log("Connected to MongoDB");
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+connect();
+
+const TransactionSchema = new mongoose.Schema({
+    salePrice: Number,
+    status: String
+})
+
+const TransactionModel = mongoose.model("Transaction" , TransactionSchema)
+
+const ProductSchema = new mongoose.Schema({
+    productName: String,
+    productBrand: String,
+    productPrice: Number
+})
+
+const ProductModel = mongoose.model("Product", ProductSchema)
 
 // Configure Multer to specify where to store uploaded files
 const storage = multer.diskStorage({
