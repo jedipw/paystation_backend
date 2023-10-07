@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import multer, { Multer } from 'multer';
 import mongoose from 'mongoose';
+import { ObjectId } from 'mongodb';
 
 dotenv.config();
 
@@ -9,13 +10,12 @@ const app: Express = express();
 const port = process.env.PORT;
 
 // connect to MongoDB using mongoose
-// mongoose.connect('mongodb+srv://admin:64130500268@cluster0.ym9abab.mongodb.net/database')
-
-const uri = "mongodb+srv://admin:64130500268@cluster0.ym9abab.mongodb.net/Database"
+const uri: string = process.env.MONGODB_URL!
 async function connect() { 
     try {
         await mongoose.connect(uri);
         console.log("Connected to MongoDB");
+        console.log(uri);
     } catch (error) {
         console.error(error);
     }
@@ -24,6 +24,8 @@ async function connect() {
 connect();
 
 const TransactionSchema = new mongoose.Schema({
+    productId: ObjectId,
+    itemId: ObjectId,
     salePrice: Number,
     status: String
 })
