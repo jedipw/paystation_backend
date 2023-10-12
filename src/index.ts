@@ -8,8 +8,7 @@ dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
-
-
+app.use(express.json())
 // connect to MongoDB using mongoose
 const uri: string = process.env.MONGODB_URL!
 async function connect() { 
@@ -25,7 +24,6 @@ connect();
 
 const TransactionSchema = new mongoose.Schema({
     productId: ObjectId,
-    itemId: ObjectId,
     salePrice: Number,
     status: String
 }, {versionKey: false});
@@ -116,19 +114,29 @@ app.get('/getProductInfo', async (req, res) => {
 
 
 
-app.delete('/removeTransaction', (req: Request, res: Response) => {
+app.delete('/removeTransaction', async (req: Request, res: Response) => {
     try {
+        const productId = req.body.productId;
+        const salePrice = req.body.salePrice;
+
+        await TransactionModel.deleteOne({productId: productId}, {salePrice: salePrice});
+        return res.json({ success: 'Successfully removed the transaction' });
 
     } catch (error) {
-
+        return res.status(404).json({ error: 'Transaction not found' });
     }
 })
 
-app.patch('/updateTransactionStatus', (req: Request, res: Response) => {
+app.patch('/updateTransactionStatus', async (req: Request, res: Response) => {
     try {
+        const productId = req.body.productId;
+        const salePrice = req.body.salePrice;
+
+        await TransactionModel.updateOne({productId: productId, salePrice: salePrice}, {status: "paid"}, );
+        return res.json({ success: 'Successfully update the transaction' });
 
     } catch (error) {
-
+        return res.status(404).json({ error: 'Transaction not found' });
     }
 })
 
