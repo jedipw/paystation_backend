@@ -26,7 +26,7 @@ const TransactionSchema = new mongoose.Schema({
     productId: ObjectId,
     salePrice: Number,
     status: String
-})
+}, {versionKey: false});
 
 const TransactionModel = mongoose.model("Transaction" , TransactionSchema)
 
@@ -55,21 +55,64 @@ app.get('/', (req: Request, res: Response) => {
     res.send('PayStation Backend Server');
 })
 
-app.get('/getProductPrice', (req: Request, res: Response) => {
+app.get('/getProductInfo', async (req, res) => {
     try {
-
-    } catch (error) {
-
+      const className = req.query.className;
+  
+      if (!className) {
+        return res.status(400).json({ error: 'Class name is required' });
+      }
+  
+      // Query the database to find all products with the specified className
+      const products = await ProductModel.find({ className: className });
+  
+      if (products.length === 0) {
+        return res.status(404).json({ error: 'Products not found' });
+      }
+  
+      // If products are found, return an array of their details
+      const productInfo = products.map((product) => ({
+        productName: product.productName,
+        productPrice: product.productPrice,
+      }));
+  
+      res.json(productInfo);
+    } catch (error:any) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error', message: error.message });
     }
-})
+  });
+  
+  
 
-app.post('/createTransaction', (req: Request, res: Response) => {
+
+  app.post('/createTransaction', async (req: Request, res: Response) => {
     try {
+        // Extract data from the request body
+        const { productId, salePrice } = req.body;
 
-    } catch (error) {
+        if (!productId || !salePrice) {
+            return res.status(400).json({ error: 'productId and salePrice are required' });
+        }
 
+        // Create a new transaction with 'waiting' status
+        const transaction = new TransactionModel({
+            productId: productId,
+            salePrice: salePrice,
+            status: 'waiting'
+        });
+
+        // Save the transaction to the database
+        await transaction.save();
+
+        res.json({ success: 'Successfully created the transaction' });
+    } catch (error: any) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error', message: error.message });
     }
-})
+});
+
+
 
 app.delete('/removeTransaction', async (req: Request, res: Response) => {
     try {
