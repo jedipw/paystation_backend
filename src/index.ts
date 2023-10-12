@@ -8,7 +8,7 @@ dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
-
+app.use(express.json())
 // connect to MongoDB using mongoose
 const uri: string = process.env.MONGODB_URL!
 async function connect() { 
@@ -71,38 +71,31 @@ app.post('/createTransaction', (req: Request, res: Response) => {
     }
 })
 
-// app.delete('/removeTransaction', (req: Request, res: Response) => {
-//     try {
-//         const { transactionId } = req.params;
+app.delete('/removeTransaction', async (req: Request, res: Response) => {
+    try {
+        const productId = req.body.productId;
+        const salePrice = req.body.salePrice;
 
-//     if (transactionId) {
-//       const transactionIndex = transactionId.findIndex(
-//         (transaction) => transaction.transactionId === transactionId
-//       );
+        await TransactionModel.deleteOne({productId: productId}, {salePrice: salePrice});
+        return res.json({ success: 'Successfully removed the transaction' });
 
-//       if (transactionIndex !== -1) {
-//         transactionId.slice(transactionIndex, 1);
+    } catch (error) {
+        return res.status(404).json({ error: 'Transaction not found' });
+    }
+})
 
-//         return res.json({ success: 'Successfully removed the transaction' });
-//       } else {
-//         return res.status(404).json({ error: 'Transaction not found' });
-//       }
-//     } else {
-//       return res.status(400).json({ error: 'No transactionId provided' });
-//     }
-//     } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ error: 'An error occurred' });
-//     }
-// })
+app.patch('/updateTransactionStatus', async (req: Request, res: Response) => {
+    try {
+        const productId = req.body.productId;
+        const salePrice = req.body.salePrice;
 
-// app.patch('/updateTransactionStatus', (req: Request, res: Response) => {
-//     try {
+        await TransactionModel.updateOne({productId: productId, salePrice: salePrice}, {status: "paid"}, );
+        return res.json({ success: 'Successfully update the transaction' });
 
-//     } catch (error) {
-
-//     }
-// })
+    } catch (error) {
+        return res.status(404).json({ error: 'Transaction not found' });
+    }
+})
 
 app.post('/uploadSlip', upload.single('file'), (req: Request, res: Response) => {
     if (!req.file) {
