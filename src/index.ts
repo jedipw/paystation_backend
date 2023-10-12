@@ -40,21 +40,38 @@ app.post('/createTransaction', (req: Request, res: Response) => {
     }
 })
 
-app.delete('/removeTransaction', (req: Request, res: Response) => {
-    try {
+// app.delete('/removeTransaction', (req: Request, res: Response) => {
+//     try {
+//         const { transactionId } = req.params;
 
-    } catch (error) {
+//     if (transactionId) {
+//       const transactionIndex = transactionId.findIndex(
+//         (transaction) => transaction.transactionId === transactionId
+//       );
 
-    }
-})
+//       if (transactionIndex !== -1) {
+//         transactionId.slice(transactionIndex, 1);
 
-app.patch('/updateTransactionStatus', (req: Request, res: Response) => {
-    try {
+//         return res.json({ success: 'Successfully removed the transaction' });
+//       } else {
+//         return res.status(404).json({ error: 'Transaction not found' });
+//       }
+//     } else {
+//       return res.status(400).json({ error: 'No transactionId provided' });
+//     }
+//     } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ error: 'An error occurred' });
+//     }
+// })
 
-    } catch (error) {
+// app.patch('/updateTransactionStatus', (req: Request, res: Response) => {
+//     try {
 
-    }
-})
+//     } catch (error) {
+
+//     }
+// })
 
 app.post('/uploadSlip', upload.single('file'), (req: Request, res: Response) => {
     if (!req.file) {
