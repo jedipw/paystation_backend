@@ -82,9 +82,6 @@ app.get('/getProductInfo', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error', message: error.message });
     }
   });
-  
-  
-
 
   app.post('/createTransaction', async (req: Request, res: Response) => {
     try {
@@ -111,8 +108,6 @@ app.get('/getProductInfo', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error', message: error.message });
     }
 });
-
-
 
 app.delete('/removeTransaction', async (req: Request, res: Response) => {
     try {
