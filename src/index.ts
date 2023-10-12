@@ -24,7 +24,6 @@ connect();
 
 const TransactionSchema = new mongoose.Schema({
     productId: ObjectId,
-    itemId: ObjectId,
     salePrice: Number,
     status: String
 })
