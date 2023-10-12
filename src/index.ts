@@ -34,7 +34,8 @@ const TransactionModel = mongoose.model("Transaction" , TransactionSchema)
 const ProductSchema = new mongoose.Schema({
     productName: String,
     productBrand: String,
-    productPrice: Number
+    productPrice: Number,
+    className: String
 })
 
 const ProductModel = mongoose.model("Product", ProductSchema)
