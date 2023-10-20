@@ -158,7 +158,7 @@ app.post('/detect', memoryUpload.single('image_file'), async function (req, res)
 async function detect_objects_on_image(buf: any) {
     const [input, img_width, img_height] = await prepare_input(buf);
     const output = await run_model(input);
-    return process_output(output, img_width, img_height);
+    return process_output(output);
 }
 
 async function prepare_input(buf: any) {
@@ -186,7 +186,7 @@ async function run_model(input: any) {
     return outputs["output0"].data;
 }
 
-function process_output(output: any, img_width: any, img_height: any) {
+function process_output(output: any) {
     let boxes: any[] = [];
     for (let index = 0; index < 8400; index++) {
         const [class_id, prob] = [...Array(80).keys()]
@@ -196,14 +196,6 @@ function process_output(output: any, img_width: any, img_height: any) {
             continue;
         }
         const label = yolo_classes[class_id];
-        const xc = output[index];
-        const yc = output[8400 + index];
-        const w = output[2 * 8400 + index];
-        const h = output[3 * 8400 + index];
-        const x1 = (xc - w / 2) / 640 * img_width;
-        const y1 = (yc - h / 2) / 640 * img_height;
-        const x2 = (xc + w / 2) / 640 * img_width;
-        const y2 = (yc + h / 2) / 640 * img_height;
         boxes.push(label);
     }
 
