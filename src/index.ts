@@ -156,7 +156,7 @@ app.post('/detect', memoryUpload.single('image_file'), async function (req, res)
 });
 
 async function detect_objects_on_image(buf: any) {
-    const [input, img_width, img_height] = await prepare_input(buf);
+    const [input] = await prepare_input(buf);
     const output = await run_model(input);
     return process_output(output);
 }
@@ -164,7 +164,6 @@ async function detect_objects_on_image(buf: any) {
 async function prepare_input(buf: any) {
     const img = sharp(buf);
     const md = await img.metadata();
-    const [img_width, img_height] = [md.width, md.height];
     const pixels = await img.removeAlpha()
         .resize({ width: 640, height: 640, fit: 'fill' })
         .raw()
@@ -176,7 +175,7 @@ async function prepare_input(buf: any) {
         blue.push(pixels[index + 2] / 255.0);
     }
     const input = [...red, ...green, ...blue];
-    return [input, img_width, img_height];
+    return [input];
 }
 
 async function run_model(input: any) {
