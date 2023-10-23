@@ -53,7 +53,7 @@ const storage = multer.diskStorage({
 
 const upload: Multer = multer({ storage: storage });
 
-const memoryUpload: Multer = multer({ storage: multer.memoryStorage() });
+const memoryUpload: Multer = multer({ storage: multer.memoryStorage(), limits: { fieldSize: 2 * 4032 * 3024 } });
 
 app.get('/', (req: Request, res: Response) => {
     res.send('PayStation Backend Server');
@@ -140,7 +140,8 @@ app.patch('/updateTransactionStatus', async (req: Request, res: Response) => {
 })
 
 app.post('/uploadSlip', upload.single('file'), (req: Request, res: Response) => {
-    if (!req.file) {
+    try {
+            if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded.' });
     }
     // You can access the uploaded file's information in req.file
@@ -148,11 +149,15 @@ app.post('/uploadSlip', upload.single('file'), (req: Request, res: Response) => 
 
     // Perform any additional processing or database operations here
     res.status(200).json({ message: 'File uploaded successfully.', filename });
+    } catch {
+        
+    }
+
 })
 
 app.post('/detect', memoryUpload.single('image_file'), async function (req, res) {
     const boxes = await detect_objects_on_image(req.file!.buffer);
-    res.json(boxes);
+    res.status(200).json(boxes);
 });
 
 async function detect_objects_on_image(buf: any) {
