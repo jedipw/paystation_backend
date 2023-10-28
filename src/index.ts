@@ -141,16 +141,16 @@ app.patch('/updateTransactionStatus', async (req: Request, res: Response) => {
 
 app.post('/uploadSlip', upload.single('file'), (req: Request, res: Response) => {
     try {
-            if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded.' });
-    }
-    // You can access the uploaded file's information in req.file
-    const filename = req.file.filename;
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded.' });
+        }
+        // You can access the uploaded file's information in req.file
+        const filename = req.file.filename;
 
-    // Perform any additional processing or database operations here
-    res.status(200).json({ message: 'File uploaded successfully.', filename });
+        // Perform any additional processing or database operations here
+        res.status(200).json({ message: 'File uploaded successfully.', filename });
     } catch {
-        
+
     }
 
 })
@@ -161,14 +161,15 @@ app.post('/detect', memoryUpload.single('image_file'), async function (req, res)
 });
 
 async function detect_objects_on_image(buf: any) {
-    const [input] = await prepare_input(buf);
+    const [input, img_width, img_height] = await prepare_input(buf);
     const output = await run_model(input);
-    return process_output(output);
+    return process_output(output, img_width, img_height);
 }
 
 async function prepare_input(buf: any) {
     const img = sharp(buf);
     const md = await img.metadata();
+    const [img_width, img_height] = [md.width, md.height];
     const pixels = await img.removeAlpha()
         .resize({ width: 640, height: 640, fit: 'fill' })
         .raw()
@@ -180,7 +181,7 @@ async function prepare_input(buf: any) {
         blue.push(pixels[index + 2] / 255.0);
     }
     const input = [...red, ...green, ...blue];
-    return [input];
+    return [input, img_width, img_height];
 }
 
 async function run_model(input: any) {
@@ -190,7 +191,7 @@ async function run_model(input: any) {
     return outputs["output0"].data;
 }
 
-function process_output(output: any) {
+function process_output(output: any, img_width: any, img_height: any) {
     let boxes: any[] = [];
     for (let index = 0; index < 8400; index++) {
         const [class_id, prob] = [...Array(80).keys()]
@@ -200,15 +201,25 @@ function process_output(output: any) {
             continue;
         }
         const label = yolo_classes[class_id];
-        boxes.push(label);
+        const xc = output[index];
+        const yc = output[8400 + index];
+        const w = output[2 * 8400 + index];
+        const h = output[3 * 8400 + index];
+        const x1 = (xc - w / 2) / 640 * img_width;
+        const y1 = (yc - h / 2) / 640 * img_height;
+        const x2 = (xc + w / 2) / 640 * img_width;
+        const y2 = (yc + h / 2) / 640 * img_height;
+        boxes.push([x1, y1, x2, y2, label, prob]);
     }
 
     boxes = boxes.sort((box1, box2) => box2[5] - box1[5])
+    console.log(boxes[0])
     const result = [];
     while (boxes.length > 0) {
-        result.push(boxes[0]);
+        result.push(boxes[0][4]);
         boxes = boxes.filter(box => iou(boxes[0], box) < 0.7);
     }
+    console.log(result);
     return result;
 }
 
@@ -235,16 +246,24 @@ function intersection(box1: any, box2: any) {
 }
 
 const yolo_classes = [
+    'bk_aluminum_ruler',
+    'blue_horse_permanent_marker',
+    'cerulean_sakura_acrylic_color',
     'faster_triplets',
-    'horse_permanent_marker',
     'jetstream_pen',
+    'jumbo_highlighter',
+    'light_green_horse_permanent_marker',
+    'light_green_sakura_acrylic_color',
     'multi_jell_blue_pen',
     'pentel_clic_eraser',
+    'pentel_correction_pen',
+    'pink_sakura_acrylic_color',
+    'red_horse_permanent_marker',
     'rotring_set',
-    'sakura_acrylic_color',
     'sakura_i_paint_brush',
     'sharpie_s_note',
     'staedtler_coloured_pencils',
+    'vermilion_sakura_acrylic_color',
 ]
 
 app.listen(port, () => {
