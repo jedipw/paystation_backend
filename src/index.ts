@@ -149,15 +149,19 @@ app.post('/uploadSlip', upload.single('file'), (req: Request, res: Response) => 
 
         // Perform any additional processing or database operations here
         res.status(200).json({ message: 'File uploaded successfully.', filename });
-    } catch {
+    } catch (error) {
 
     }
 
 })
 
 app.post('/detect', memoryUpload.single('image_file'), async function (req, res) {
-    const boxes = await detect_objects_on_image(req.file!.buffer);
-    res.status(200).json(boxes);
+    try {
+        const boxes = await detect_objects_on_image(req.file!.buffer);
+        res.status(200).json(boxes);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error', message: error });
+    }
 });
 
 async function detect_objects_on_image(buf: any) {
@@ -191,7 +195,7 @@ async function run_model(input: any) {
     return outputs["output0"].data;
 }
 
-function process_output(output: any, img_width: any, img_height: any) {
+async function process_output(output: any, img_width: any, img_height: any) {
     let boxes: any[] = [];
     for (let index = 0; index < 8400; index++) {
         const [class_id, prob] = [...Array(80).keys()]
@@ -213,14 +217,43 @@ function process_output(output: any, img_width: any, img_height: any) {
     }
 
     boxes = boxes.sort((box1, box2) => box2[5] - box1[5])
-    console.log(boxes[0])
     const result = [];
     while (boxes.length > 0) {
         result.push(boxes[0][4]);
         boxes = boxes.filter(box => iou(boxes[0], box) < 0.7);
     }
-    console.log(result);
-    return result;
+    const priceCache: { [key: string]: number | undefined } = {};
+    const nameCache: { [key: string]: string | undefined } = {};
+    const outputList: [number | undefined, string | undefined, number | undefined][] = [];
+    for (const item of result) {
+        if (!priceCache[item]) {
+            // Query the database to find all products with the specified className
+            const products = await ProductModel.find({ className: item });
+
+            // If products are found, return an array of their details
+            const productInfo = products.map((product) => ({
+                productName: product.productName,
+                productPrice: product.productPrice,
+            }));
+
+            priceCache[item] = productInfo[0].productPrice;
+            nameCache[item] = productInfo[0].productName;
+            outputList.push([1, nameCache[item], priceCache[item]]);
+        } else if (priceCache[item]) {
+            const currentCount = outputList.find((element) => element[1] === nameCache[item])![0];
+            const currentCountIndex = outputList.findIndex((element) => element[1] === nameCache[item])!;
+            if (currentCount !== -1) {
+                outputList.splice(currentCountIndex, 1);
+            }
+
+            outputList.push([
+                currentCount! + 1,
+                nameCache[item],
+                priceCache[item]!,
+            ]);
+        }
+    }
+    return outputList;
 }
 
 function iou(box1: any, box2: any) {
