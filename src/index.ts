@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
 import sharp from 'sharp';
 import ort from 'onnxruntime-node';
-import mongooseConnection from '../helpers/mongoose-connection';
+
 
 dotenv.config();
 
@@ -13,10 +13,12 @@ const app: Express = express();
 const port = process.env.PORT;
 app.use(express.json())
 
-mongooseConnection();
 
+const mongooseConnection = require("./helpers/mongoose-connection");
 const TransactionModel = require('../models/transaction');
 const ProductModel = require('../models/product');
+
+mongooseConnection();
 
 // Configure Multer to specify where to store uploaded files
 const storage = multer.diskStorage({
