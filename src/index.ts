@@ -3,9 +3,9 @@ import dotenv from 'dotenv';
 import multer, { Multer } from 'multer';
 import sharp from 'sharp';
 import ort from 'onnxruntime-node';
-import mongooseConnection from '../helpers/mongoose-connection';
-import { ProductModel } from '../models/product';
-import { TransactionModel } from '../models/transaction';
+import mongooseConnection from '../helpers/mongoose-connection.js';
+import { ProductModel } from '../models/product.js';
+import { TransactionModel } from '../models/transaction.js';
 
 dotenv.config();
 
