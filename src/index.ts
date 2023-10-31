@@ -6,6 +6,7 @@ import ort from 'onnxruntime-node';
 import mongooseConnection from '../helpers/mongoose-connection.js';
 import { ProductModel } from '../models/product.js';
 import { TransactionModel } from '../models/transaction.js';
+import appRoutes from '../routes/index.js';
 
 dotenv.config();
 
@@ -29,6 +30,8 @@ const storage = multer.diskStorage({
 const upload: Multer = multer({ storage: storage });
 
 const memoryUpload: Multer = multer({ storage: multer.memoryStorage(), limits: { fieldSize: 2 * 4032 * 3024 } });
+
+app.use("/api", appRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('PayStation Backend Server');
