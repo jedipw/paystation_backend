@@ -1,22 +1,17 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import multer, { Multer } from 'multer';
-import mongoose from 'mongoose';
-import { ObjectId } from 'mongodb';
 import sharp from 'sharp';
 import ort from 'onnxruntime-node';
-
+import mongooseConnection from '../helpers/mongoose-connection';
+import { ProductModel } from '../models/product';
+import { TransactionModel } from '../models/transaction';
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
 app.use(express.json())
-
-
-const mongooseConnection = require("./helpers/mongoose-connection");
-const TransactionModel = require('../models/transaction');
-const ProductModel = require('../models/product');
 
 mongooseConnection();
 
@@ -132,7 +127,6 @@ app.post('/uploadSlip', upload.single('file'), (req: Request, res: Response) => 
     } catch (error) {
 
     }
-
 })
 
 app.post('/detect', memoryUpload.single('image_file'), async function (req, res) {

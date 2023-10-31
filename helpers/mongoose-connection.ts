@@ -5,7 +5,7 @@ dotenv.config();
 
 const uri: string = process.env.MONGODB_URL!
 
-async function mongooseConnection() {
+export default async function mongooseConnection() {
     try {
         console.log("test")
         await mongoose.connect(uri);
@@ -14,5 +14,3 @@ async function mongooseConnection() {
         console.error(error);
     }
 }
-
-module.exports = mongooseConnection();

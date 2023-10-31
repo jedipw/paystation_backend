@@ -6,4 +6,4 @@ const ProductSchema = new mongoose.Schema({
     className: String
 })
 
-module.exports = mongoose.model("Product", ProductSchema);
+export const ProductModel = mongoose.model("Product", ProductSchema);

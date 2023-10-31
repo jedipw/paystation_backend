@@ -7,4 +7,4 @@ const TransactionSchema = new mongoose.Schema({
     status: String
 }, { versionKey: false });
 
-module.exports = mongoose.model("Transaction", TransactionSchema);
+export const TransactionModel = mongoose.model("Transaction", TransactionSchema);
