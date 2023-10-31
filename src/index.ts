@@ -15,21 +15,8 @@ app.use(express.json())
 
 mongooseConnection();
 
-const TransactionSchema = new mongoose.Schema({
-    productId: ObjectId,
-    salePrice: Number,
-    status: String
-}, { versionKey: false });
-
-const TransactionModel = mongoose.model("Transaction", TransactionSchema)
-
-const ProductSchema = new mongoose.Schema({
-    productName: String,
-    productPrice: Number,
-    className: String
-})
-
-const ProductModel = mongoose.model("Product", ProductSchema)
+const TransactionModel = require('../models/transaction');
+const ProductModel = require('../models/product');
 
 // Configure Multer to specify where to store uploaded files
 const storage = multer.diskStorage({
@@ -66,7 +53,7 @@ app.get('/getProductInfo', async (req, res) => {
         }
 
         // If products are found, return an array of their details
-        const productInfo = products.map((product) => ({
+        const productInfo = products.map((product: any) => ({
             productName: product.productName,
             productPrice: product.productPrice,
         }));
@@ -222,7 +209,7 @@ async function process_output(output: any, img_width: any, img_height: any) {
             const products = await ProductModel.find({ className: item });
 
             // If products are found, return an array of their details
-            const productInfo = products.map((product) => ({
+            const productInfo = products.map((product: any) => ({
                 productName: product.productName,
                 productPrice: product.productPrice,
             }));
