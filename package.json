@@ -2,12 +2,12 @@
   "name": "paystation_backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "server.ts",
   "type": "module",
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/src/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/index.js\""
+    "start": "node dist/server.js",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\""
   },
   "keywords": [],
   "author": "",
