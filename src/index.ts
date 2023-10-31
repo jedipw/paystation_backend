@@ -5,24 +5,15 @@ import mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
 import sharp from 'sharp';
 import ort from 'onnxruntime-node';
+import mongooseConnection from '../helpers/mongoose-connection';
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
 app.use(express.json())
-// connect to MongoDB using mongoose
-const uri: string = process.env.MONGODB_URL!
-async function connect() {
-    try {
-        await mongoose.connect(uri);
-        console.log("Connected to MongoDB");
-    } catch (error) {
-        console.error(error);
-    }
-}
 
-connect();
+mongooseConnection();
 
 const TransactionSchema = new mongoose.Schema({
     productId: ObjectId,
