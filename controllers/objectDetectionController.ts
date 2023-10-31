@@ -127,9 +127,11 @@ function intersection(box1: any, box2: any) {
 
 const yolo_classes = [
     'bk_aluminum_ruler',
+    'black_horse_permanent_marker',
     'blue_horse_permanent_marker',
-    'cerulean_sakura_acrylic_color',
+    'cerulean_blue_sakura_acrylic_color',
     'faster_triplets',
+    'horse_permanent_marker',
     'jetstream_pen',
     'jumbo_highlighter',
     'light_green_horse_permanent_marker',
@@ -143,5 +145,6 @@ const yolo_classes = [
     'sakura_i_paint_brush',
     'sharpie_s_note',
     'staedtler_coloured_pencils',
-    'vermilion_sakura_acrylic_color',
+    'stainless_steel_blades',
+    'vermilion_sakura_acrylic_color'
 ]
