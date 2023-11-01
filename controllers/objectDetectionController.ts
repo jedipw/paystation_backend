@@ -131,7 +131,6 @@ const yolo_classes = [
     'blue_horse_permanent_marker',
     'cerulean_blue_sakura_acrylic_color',
     'faster_triplets',
-    'horse_permanent_marker',
     'jetstream_pen',
     'jumbo_highlighter',
     'light_green_horse_permanent_marker',
