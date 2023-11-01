@@ -129,7 +129,7 @@ const yolo_classes = [
     'bk_aluminum_ruler',
     'black_horse_permanent_marker',
     'blue_horse_permanent_marker',
-    'cerulean_blue_sakura_acrylic_color',
+    'cerulean_sakura_acrylic_color',
     'faster_triplets',
     'jetstream_pen',
     'jumbo_highlighter',
