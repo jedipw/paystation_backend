@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 
 const ProductToTransactionSchema = new mongoose.Schema({
     transactionId: ObjectId,
-    productId: ObjectId,
+    productName: String,
     quantity: Number
 }, { versionKey: false });
 
