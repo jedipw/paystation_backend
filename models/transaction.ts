@@ -1,9 +1,7 @@
 import mongoose from "mongoose";
-import { ObjectId } from 'mongodb';
 
 const TransactionSchema = new mongoose.Schema({
-    productId: ObjectId,
-    salePrice: Number,
+    totalPrice: Number,
     status: String
 }, { versionKey: false });
 

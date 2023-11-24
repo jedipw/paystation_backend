@@ -1,6 +1,7 @@
 import express from 'express';
 import productRoutes from './productRoutes.js';
 import transactionRoutes from './transactionRoutes.js';
+import productToTransactionRoutes from './productToTransactionRoutes.js';
 import uploadSlipRoutes from './uploadRoutes.js';
 import objectDetectionRoutes from './objectDetectionRoutes.js';
 
@@ -12,6 +13,7 @@ appRoutes.get('/', (req, res) => {
 
 appRoutes.use('/product', productRoutes);
 appRoutes.use('/transaction', transactionRoutes);
+appRoutes.use('/productToTransaction', productToTransactionRoutes);
 appRoutes.use('/upload', uploadSlipRoutes);
 appRoutes.use('/objectDetection', objectDetectionRoutes)
 

@@ -4,16 +4,15 @@ import { TransactionModel } from '../models/transaction.js';
 export const createTransaction = async (req: Request, res: Response) => {
     try {
         // Extract data from the request body
-        const { productId, salePrice } = req.body;
+        const { totalPrice } = req.body;
 
-        if (!productId || !salePrice) {
-            return res.status(400).json({ error: 'productId and salePrice are required' });
+        if (!totalPrice) {
+            return res.status(400).json({ error: 'totalPrice is required' });
         }
 
         // Create a new transaction with 'waiting' status
         const transaction = new TransactionModel({
-            productId: productId,
-            salePrice: salePrice,
+            totalPrice: totalPrice,
             status: 'waiting'
         });
 
