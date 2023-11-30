@@ -4,16 +4,16 @@ import { ProductToTransactionModel } from '../models/productToTransaction.js';
 export const createProductToTransaction = async (req: Request, res: Response) => {
     try {
         // Extract data from the request body
-        const { transactionId, productId, quantity } = req.body;
+        const { transactionId, productName, quantity } = req.body;
 
-        if (!productId || !transactionId || !quantity) {
+        if (!productName || !transactionId || !quantity) {
             return res.status(400).json({ error: 'productId, transactionId, and quantity are required' });
         }
 
         // Create a new transaction with 'waiting' status
         const productToTransaction = new ProductToTransactionModel({
             transactionId: transactionId,
-            productId: productId,
+            productName: productName,
             quantity: quantity
         });
 
