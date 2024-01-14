@@ -13,7 +13,6 @@ export const createTransaction = async (req: Request, res: Response) => {
         // Create a new transaction with 'waiting' status
         const transaction = new TransactionModel({
             totalPrice: totalPrice,
-            status: 'waiting'
         });
 
         // Save the transaction to the database
@@ -23,27 +22,5 @@ export const createTransaction = async (req: Request, res: Response) => {
     } catch (error: any) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal Server Error', message: error.message });
-    }
-}
-
-export const updateTransactionStatus = async (req: Request, res: Response) => {
-    try {
-        const transactionId = req.body.transactionId;
-
-        await TransactionModel.updateOne({ _id: transactionId }, { status: "paid" },);
-        return res.json({ success: 'Successfully update the transaction' });
-    } catch (error) {
-        return res.status(404).json({ error: 'Transaction not found' });
-    }
-}
-
-export const removeTransaction = async (req: Request, res: Response) => {
-    try {
-        const transactionId = req.body.transactionId;
-
-        await TransactionModel.deleteOne({ _id: transactionId });
-        return res.json({ success: 'Successfully removed the transaction' });
-    } catch (error) {
-        return res.status(404).json({ error: 'Transaction not found' });
     }
 }

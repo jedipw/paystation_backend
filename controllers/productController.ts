@@ -17,7 +17,11 @@ export const getProductInfo = async (req: Request, res: Response) => {
         }
 
         // If products are found, return an array of their details
-        const productInfo = products.map((product: any) => ({
+        const productInfo = products.map((product: {
+            productName?: string | undefined;
+            productPrice?: number | undefined;
+            className?: string | undefined;
+        }) => ({
             productName: product.productName,
             productPrice: product.productPrice,
         }));

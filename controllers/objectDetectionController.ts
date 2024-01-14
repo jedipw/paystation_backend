@@ -11,13 +11,13 @@ export const detect = async function (req: Request, res: Response) {
         res.status(500).json({ error: 'Internal Server Error', message: error });
     }
 }
-async function detect_objects_on_image(buf: any) {
+async function detect_objects_on_image(buf: Buffer) {
     const [input, img_width, img_height] = await prepare_input(buf);
     const output = await run_model(input);
     return process_output(output, img_width, img_height);
 }
 
-async function prepare_input(buf: any) {
+async function prepare_input(buf: Buffer) {
     const img = sharp(buf);
     const md = await img.metadata();
     const [img_width, img_height] = [md.width, md.height];
@@ -78,7 +78,11 @@ async function process_output(output: any, img_width: any, img_height: any) {
             const products = await ProductModel.find({ className: item });
 
             // If products are found, return an array of their details
-            const productInfo = products.map((product: any) => ({
+            const productInfo = products.map((product: {
+                productName?: string | undefined;
+                productPrice?: number | undefined;
+                className?: string | undefined;
+            }) => ({
                 productName: product.productName,
                 productPrice: product.productPrice,
             }));
@@ -92,7 +96,6 @@ async function process_output(output: any, img_width: any, img_height: any) {
             if (currentCount !== -1) {
                 outputList.splice(currentCountIndex, 1);
             }
-
             outputList.push([
                 currentCount! + 1,
                 nameCache[item],
