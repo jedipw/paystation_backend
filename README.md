@@ -22,12 +22,14 @@ Welcome to the PayStation Backend GitHub Repository, an AI mobile application th
 
 ## First Time Setup
 
-1) Create a new file with the name ".env" in the root folder and place the following inside the file:
+1) Create a new file named ".env" in the root folder and insert the following content into the file:
    ```env
    PORT=3000
    MONGODB_URL=The URL of MongoDB (Contact us for the URL)
    ```
 
-2) Create a new folder with the name "uploads" in the root folder.
-3) Run `npm i` in terminal.
-4) Run `npm start` in terminal
+2) Create a new folder named "uploads" in the root folder.
+3) Run `npm i` in the terminal.
+4) Run `npm run dev` in the terminal.
+
+**Note:** For the first-time setup of the frontend, please refer to the installation manual in the README.md of paystation_frontend.
